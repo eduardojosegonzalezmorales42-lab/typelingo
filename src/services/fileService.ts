@@ -2,7 +2,7 @@ import fs from 'fs/promises';
 import path from 'path';
 
 export class FileService {
-  private static readonly filePath = path.join(process.cwd(), 'Hayek-Friedrich-the-road-to-serfdom-text-and-documents-zlib.txt');
+  private static readonly filePath = path.join(process.cwd(), 'road-to-serfdom.txt');
 
   /**
    * Extracts the text content from the local txt file.
