@@ -8,8 +8,8 @@ app.use(express.json());
 
 app.get('/', async (req: Request, res: Response) => {
   try {
-    const text = await FileService.readTxtContent();
-    res.json({ content: text });
+    const paragraphs = await FileService.getNumberedParagraphs();
+    res.json(paragraphs);
   } catch (error) {
     res.status(500).json({ error: 'Failed to extract text from file.' });
   }
