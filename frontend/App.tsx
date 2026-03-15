@@ -81,7 +81,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Sentence: {sentenceIndex + 1} | Letter: {count}/{sentenceLength}</Text>
+      <Text style={styles.label}>Sentence: {sentenceIndex + 1}</Text>
       <View style={styles.sentenceContainer}>
         {currentSentence ? (
           <Text style={styles.letter}>
