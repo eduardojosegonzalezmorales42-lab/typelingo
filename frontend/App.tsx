@@ -10,8 +10,8 @@ export default function App() {
   const [sentenceIndex, setSentenceIndex] = useState(0);
   const [count, setCount] = useState(0);
 
-  const currentSentence = sentences[sentenceIndex] || "";
-  const currentGermanSentence = germanSentences[sentenceIndex] || "";
+  const currentSentence = germanSentences[sentenceIndex] || "";
+  const currentEnglishSentence = sentences[sentenceIndex] || "";
   const sentenceLength = currentSentence.length;
 
   useEffect(() => {
@@ -97,8 +97,8 @@ export default function App() {
           <Text>Loading sentences...</Text>
         )}
       </View>
-      {currentGermanSentence ? (
-        <Text style={styles.germanSentence}>{currentGermanSentence}</Text>
+      {currentEnglishSentence ? (
+        <Text style={styles.germanSentence}>{currentEnglishSentence}</Text>
       ) : null}
       <StatusBar style="auto" />
     </View>
