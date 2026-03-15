@@ -15,16 +15,30 @@ export default function App() {
   const sentenceLength = currentSentence.length;
 
   useEffect(() => {
-    // Fetch sentences once on mount
-    fetch(API_URL)
-      .then((res) => res.json())
-      .then((data) => setSentences(data.sentences || []))
-      .catch((err) => console.error("Fetch error (English):", err));
+    // Fetch both and then filter/sync
+    Promise.all([
+      fetch(API_URL).then(res => res.json()),
+      fetch(API_URL + 'german').then(res => res.json())
+    ]).then(([enData, deData]) => {
+      const enSentences = enData.sentences || [];
+      const deSentences = deData.deSentences || deData.sentences || [];
 
-    fetch(API_URL + 'german')
-      .then((res) => res.json())
-      .then((data) => setGermanSentences(data.sentences || []))
-      .catch((err) => console.error("Fetch error (German):", err));
+      // Filter based on English sentence length (threshold: 40 characters)
+      const filteredEn: string[] = [];
+      const filteredDe: string[] = [];
+
+      enSentences.forEach((s: string, i: number) => {
+        if (s.length >= 40) {
+          filteredEn.push(s);
+          if (deSentences[i]) {
+            filteredDe.push(deSentences[i]);
+          }
+        }
+      });
+
+      setSentences(filteredEn);
+      setGermanSentences(filteredDe);
+    }).catch((err) => console.error("Fetch error:", err));
   }, []);
 
   useEffect(() => {
@@ -65,25 +79,20 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [sentenceLength, currentSentence]);
 
-  const letters = currentSentence.split('');
-
   return (
     <View style={styles.container}>
       <Text style={styles.label}>Sentence: {sentenceIndex + 1} | Letter: {count}/{sentenceLength}</Text>
       <View style={styles.sentenceContainer}>
-        {letters.length > 0 ? (
-          letters.map((char, index) => (
-            <Text 
-              key={index} 
-              style={[
-                styles.letter,
-                index < count && styles.typedLetter,
-                index === count && styles.activeLetter
-              ]}
-            >
-              {char}
+        {currentSentence ? (
+          <Text style={styles.letter}>
+            <Text style={styles.typedLetter}>
+              {currentSentence.slice(0, count)}
             </Text>
-          ))
+            <Text style={styles.activeLetter}>
+              {currentSentence[count]}
+            </Text>
+            {currentSentence.slice(count + 1)}
+          </Text>
         ) : (
           <Text>Loading sentences...</Text>
         )}
@@ -110,8 +119,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   sentenceContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
     justifyContent: 'center',
     marginBottom: 20,
   },
