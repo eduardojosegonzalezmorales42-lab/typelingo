@@ -61,8 +61,20 @@ export default function App() {
       setCount((prevCount) => {
         const expectedChar = currentSentence[prevCount];
         
+        // Flexible matching for German characters
+        const isMatch = (input: string, target: string) => {
+          if (input === target) return true;
+          const map: Record<string, string> = {
+            'ä': 'a', 'Ä': 'A',
+            'ö': 'o', 'Ö': 'O',
+            'ü': 'u', 'Ü': 'U',
+            'ß': 's'
+          };
+          return map[target] === input;
+        };
+
         // Check if the pressed key matches the expected character
-        if (event.key === expectedChar) {
+        if (isMatch(event.key, expectedChar)) {
           const nextCount = prevCount + 1;
           if (nextCount >= sentenceLength && sentenceLength > 0) {
             setSentenceIndex((prevIdx) => prevIdx + 1);
