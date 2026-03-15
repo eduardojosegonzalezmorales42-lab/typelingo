@@ -26,7 +26,7 @@ app.get('/', (req, res) => {
     // Regex to split by sentence endings (., !, ?) followed by whitespace or end of string
     const sentences = content
       .split(/(?<=[.!?])\s+/)
-      .map(s => s.trim())
+      .map(s => s.replace(/\s+/g, ' ').trim())
       .filter(s => s.length > 0);
 
     res.json({
@@ -48,7 +48,7 @@ app.get('/german', (req, res) => {
     // Regex to split by sentence endings (., !, ?) followed by whitespace or end of string
     const sentences = content
       .split(/(?<=[.!?])\s+/)
-      .map(s => s.trim())
+      .map(s => s.replace(/\s+/g, ' ').trim())
       .filter(s => s.length > 0);
 
     res.json({
