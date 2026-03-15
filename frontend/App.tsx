@@ -22,12 +22,23 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  const currentSentence = sentences[count] || "";
+  const letters = currentSentence.split('');
+
   return (
     <View style={styles.container}>
       <Text style={styles.label}>Sentence Index: {count}</Text>
-      <Text style={styles.sentence}>
-        {sentences[count] || "Loading sentences..."}
-      </Text>
+      <View style={styles.sentenceContainer}>
+        {letters.length > 0 ? (
+          letters.map((char, index) => (
+            <Text key={index} style={styles.letter}>
+              {char}
+            </Text>
+          ))
+        ) : (
+          <Text>Loading sentences...</Text>
+        )}
+      </View>
       <StatusBar style="auto" />
     </View>
   );
@@ -44,10 +55,15 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 20,
   },
-  sentence: {
-    fontSize: 16,
-    textAlign: 'center',
+  sentenceContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+  },
+  letter: {
+    fontSize: 24,
+    fontFamily: 'monospace',
   },
 });
