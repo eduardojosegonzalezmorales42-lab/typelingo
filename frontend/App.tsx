@@ -29,24 +29,36 @@ export default function App() {
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      // Prevent scrolling or other default actions for keys we handle
-      if (event.key === ' ' || event.key.length === 1) {
-        setCount((prevCount) => {
-          const expectedChar = currentSentence[prevCount];
-          
-          // Check if the pressed key matches the expected character
-          if (event.key === expectedChar) {
-            const nextCount = prevCount + 1;
-            if (nextCount >= sentenceLength && sentenceLength > 0) {
-              setSentenceIndex((prevIdx) => prevIdx + 1);
-              return 0;
-            }
-            return nextCount;
-          }
-          
-          return prevCount; // No progress if key doesn't match
-        });
+      // Prevent default actions for keys that disrupt the typing experience
+      if (event.key === ' ' || event.key === 'Tab') {
+        event.preventDefault();
       }
+
+      // Ignore modifier keys and other special keys that don't produce a character
+      if (
+        event.key.length !== 1 || 
+        event.ctrlKey || 
+        event.altKey || 
+        event.metaKey
+      ) {
+        return;
+      }
+
+      setCount((prevCount) => {
+        const expectedChar = currentSentence[prevCount];
+        
+        // Check if the pressed key matches the expected character
+        if (event.key === expectedChar) {
+          const nextCount = prevCount + 1;
+          if (nextCount >= sentenceLength && sentenceLength > 0) {
+            setSentenceIndex((prevIdx) => prevIdx + 1);
+            return 0;
+          }
+          return nextCount;
+        }
+        
+        return prevCount; // No progress if key doesn't match
+      });
     };
 
     window.addEventListener('keydown', handleKeyDown);
