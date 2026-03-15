@@ -1,10 +1,21 @@
 const express = require('express');
+const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
 const app = express();
 const port = 3000;
 
+// Enable CORS for all origins and methods
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.use(express.json());
+
+// Trust proxy if we're behind one
+app.set('trust proxy', 1);
 
 app.get('/', (req, res) => {
   try {
@@ -12,7 +23,6 @@ app.get('/', (req, res) => {
     const content = fs.readFileSync(filePath, 'utf8');
 
     // Regex to split by sentence endings (., !, ?) followed by whitespace or end of string
-    // This handles common punctuation and keeps the content relatively clean
     const sentences = content
       .split(/(?<=[.!?])\s+/)
       .map(s => s.trim())
@@ -29,6 +39,7 @@ app.get('/', (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
+// Explicitly listen on all interfaces (0.0.0.0)
+app.listen(port, '0.0.0.0', () => {
+  console.log(`Server is running at http://0.0.0.0:${port}`);
 });
