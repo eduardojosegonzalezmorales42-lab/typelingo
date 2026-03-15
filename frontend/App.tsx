@@ -6,10 +6,12 @@ const API_URL = 'http://localhost:3000/';
 
 export default function App() {
   const [sentences, setSentences] = useState<string[]>([]);
+  const [germanSentences, setGermanSentences] = useState<string[]>([]);
   const [sentenceIndex, setSentenceIndex] = useState(0);
   const [count, setCount] = useState(0);
 
   const currentSentence = sentences[sentenceIndex] || "";
+  const currentGermanSentence = germanSentences[sentenceIndex] || "";
   const sentenceLength = currentSentence.length;
 
   useEffect(() => {
@@ -17,7 +19,12 @@ export default function App() {
     fetch(API_URL)
       .then((res) => res.json())
       .then((data) => setSentences(data.sentences || []))
-      .catch((err) => console.error("Fetch error:", err));
+      .catch((err) => console.error("Fetch error (English):", err));
+
+    fetch(API_URL + 'german')
+      .then((res) => res.json())
+      .then((data) => setGermanSentences(data.sentences || []))
+      .catch((err) => console.error("Fetch error (German):", err));
   }, []);
 
   useEffect(() => {
@@ -69,6 +76,9 @@ export default function App() {
           <Text>Loading sentences...</Text>
         )}
       </View>
+      {currentGermanSentence ? (
+        <Text style={styles.germanSentence}>{currentGermanSentence}</Text>
+      ) : null}
       <StatusBar style="auto" />
     </View>
   );
@@ -91,6 +101,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
+    marginBottom: 20,
   },
   letter: {
     fontSize: 24,
@@ -103,5 +114,12 @@ const styles = StyleSheet.create({
   activeLetter: {
     textDecorationLine: 'underline',
     color: '#007AFF',
+  },
+  germanSentence: {
+    fontSize: 20,
+    color: '#666',
+    fontStyle: 'italic',
+    textAlign: 'center',
+    marginTop: 20,
   },
 });
