@@ -14,6 +14,10 @@ export default function App() {
   const currentEnglishSentence = sentences[sentenceIndex] || "";
   const sentenceLength = currentSentence.length;
 
+  const englishProgressIndex = currentSentence.length > 0 
+    ? Math.floor((count / currentSentence.length) * currentEnglishSentence.length)
+    : 0;
+
   useEffect(() => {
     // Fetch both and then filter/sync
     Promise.all([
@@ -110,7 +114,17 @@ export default function App() {
         )}
       </View>
       {currentEnglishSentence ? (
-        <Text style={styles.germanSentence}>{currentEnglishSentence}</Text>
+        <View style={styles.sentenceContainer}>
+          <Text style={styles.englishLetter}>
+            <Text style={styles.typedLetter}>
+              {currentEnglishSentence.slice(0, englishProgressIndex)}
+            </Text>
+            <Text style={styles.activeLetter}>
+              {currentEnglishSentence[englishProgressIndex]}
+            </Text>
+            {currentEnglishSentence.slice(englishProgressIndex + 1)}
+          </Text>
+        </View>
       ) : null}
       <StatusBar style="auto" />
     </View>
@@ -138,6 +152,13 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontFamily: 'monospace',
     color: '#ccc',
+  },
+  englishLetter: {
+    fontSize: 20,
+    fontFamily: 'monospace',
+    color: '#999',
+    fontStyle: 'italic',
+    textAlign: 'center',
   },
   typedLetter: {
     color: '#000',
